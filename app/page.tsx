@@ -1,65 +1,93 @@
-import Image from "next/image";
+"use client";
 
-export default function Home() {
+import * as React from "react";
+import { UrlForm } from "@/components/url-form";
+import { UrlCard } from "@/components/url-card";
+import type { Url } from "@/types";
+import { Link2, Zap, BarChart3, Shield } from "lucide-react";
+
+export default function HomePage() {
+  const [recentUrl, setRecentUrl] = React.useState<Url | null>(null);
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
+    <div className="container mx-auto max-w-screen-xl px-4 py-12">
+      {/* Hero Section */}
+      <section className="text-center mb-12">
+        <h1 className="text-4xl font-bold tracking-tight sm:text-5xl lg:text-6xl mb-4">
+          Shorten Your Links,
+          <br />
+          <span className="text-[hsl(var(--muted-foreground))]">
+            Expand Your Reach
+          </span>
+        </h1>
+        <p className="text-lg text-[hsl(var(--muted-foreground))] max-w-2xl mx-auto">
+          Fast, reliable URL shortening with detailed analytics. Create custom
+          branded links and track every click.
+        </p>
+      </section>
+
+      {/* URL Form */}
+      <section className="max-w-2xl mx-auto mb-8">
+        <div className="rounded-xl border border-[hsl(var(--border))] bg-[hsl(var(--card))] p-6 sm:p-8 shadow-sm">
+          <UrlForm onSuccess={setRecentUrl} />
+        </div>
+      </section>
+
+      {/* Recent URL Result */}
+      {recentUrl && (
+        <section className="max-w-2xl mx-auto mb-12">
+          <h2 className="text-sm font-medium text-[hsl(var(--muted-foreground))] mb-3">
+            Your shortened link:
+          </h2>
+          <UrlCard url={recentUrl} showDelete={false} />
+        </section>
+      )}
+
+      {/* Features Grid */}
+      <section className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4 mt-16">
+        <FeatureCard
+          icon={<Link2 className="h-6 w-6" />}
+          title="Custom Links"
+          description="Create branded short links with custom codes"
         />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
+        <FeatureCard
+          icon={<Zap className="h-6 w-6" />}
+          title="Lightning Fast"
+          description="Redis-powered redirects for instant access"
+        />
+        <FeatureCard
+          icon={<BarChart3 className="h-6 w-6" />}
+          title="Analytics"
+          description="Track clicks, referrers, and user agents"
+        />
+        <FeatureCard
+          icon={<Shield className="h-6 w-6" />}
+          title="Secure"
+          description="JWT auth and role-based access control"
+        />
+      </section>
+    </div>
+  );
+}
+
+function FeatureCard({
+  icon,
+  title,
+  description,
+}: {
+  icon: React.ReactNode;
+  title: string;
+  description: string;
+}) {
+  return (
+    <div className="rounded-xl border border-[hsl(var(--border))] p-6 text-center">
+      <div className="inline-flex items-center justify-center rounded-full bg-[hsl(var(--primary))] text-[hsl(var(--primary-foreground))] p-3 mb-4">
+        {icon}
+      </div>
+      <h3 className="font-semibold mb-1">{title}</h3>
+      <p className="text-sm text-[hsl(var(--muted-foreground))]">
+        {description}
+      </p>
     </div>
   );
 }
