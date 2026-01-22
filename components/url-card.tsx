@@ -39,7 +39,7 @@ export function UrlCard({ url, onDelete, showDelete = true }: UrlCardProps) {
   const isExpired = url.expiresAt && new Date(url.expiresAt) < new Date();
 
   return (
-    <Card className="group transition-shadow hover:shadow-md">
+    <Card className="group transition-all duration-300 hover:shadow-xl hover:shadow-primary/10 hover:border-primary/30">
       <CardContent className="p-4">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div className="min-w-0 flex-1 space-y-1">
@@ -48,7 +48,7 @@ export function UrlCard({ url, onDelete, showDelete = true }: UrlCardProps) {
                 href={url.shortUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="font-medium text-[hsl(var(--primary))] hover:underline truncate"
+                className="font-medium text-primary hover:underline hover:brightness-125 truncate transition-all duration-200"
               >
                 {url.shortUrl}
               </a>
@@ -58,10 +58,10 @@ export function UrlCard({ url, onDelete, showDelete = true }: UrlCardProps) {
                 </Badge>
               )}
             </div>
-            <p className="text-sm text-[hsl(var(--muted-foreground))] truncate">
+            <p className="text-sm text-muted-foreground truncate">
               {url.originalUrl}
             </p>
-            <div className="flex items-center gap-4 text-xs text-[hsl(var(--muted-foreground))]">
+            <div className="flex items-center gap-4 text-xs text-muted-foreground">
               <span className="flex items-center gap-1">
                 <BarChart3 className="h-3 w-3" />
                 {url.clickCount} click{url.clickCount !== 1 ? "s" : ""}
@@ -107,7 +107,7 @@ export function UrlCard({ url, onDelete, showDelete = true }: UrlCardProps) {
                 variant="outline"
                 size="sm"
                 onClick={onDelete}
-                className="text-[hsl(var(--destructive))] hover:bg-[hsl(var(--destructive))] hover:text-white"
+                className="text-destructive hover:bg-destructive hover:text-white hover:shadow-lg hover:shadow-destructive/25 transition-all duration-200"
               >
                 <Trash2 className="h-4 w-4" />
               </Button>

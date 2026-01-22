@@ -22,16 +22,16 @@ export function Header() {
   };
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-[hsl(var(--border))] bg-[hsl(var(--background))]/95 backdrop-blur supports-[backdrop-filter]:bg-[hsl(var(--background))]/60">
+    <header className="sticky top-0 z-50 w-full border-b border-border/50 bg-background/80 backdrop-blur-md supports-[backdrop-filter]:bg-background/60 shadow-lg shadow-black/5">
       <div className="container mx-auto flex h-14 max-w-screen-xl items-center justify-between px-4">
-        <Link href="/" className="flex items-center gap-2 font-semibold">
-          <Link2 className="h-5 w-5" />
-          <span>LinkShort</span>
+        <Link href="/" className="flex items-center gap-2 font-semibold group">
+          <Link2 className="h-5 w-5 text-primary transition-transform duration-200 group-hover:scale-110 group-hover:rotate-12" />
+          <span className="transition-colors duration-200 group-hover:text-primary">LinkShort</span>
         </Link>
 
         <nav className="flex items-center gap-4">
           {isLoading ? (
-            <div className="h-9 w-20 animate-pulse rounded-md bg-[hsl(var(--muted))]" />
+            <div className="h-9 w-20 animate-pulse rounded-md bg-muted" />
           ) : isAuthenticated ? (
             <>
               <Link href="/dashboard">
@@ -66,7 +66,7 @@ export function Header() {
                   <DropdownMenuSeparator />
                   <DropdownMenuItem
                     onClick={handleLogout}
-                    className="flex items-center gap-2 text-[hsl(var(--destructive))]"
+                    className="flex items-center gap-2 text-destructive hover:!text-destructive hover:!bg-destructive/10 cursor-pointer transition-colors duration-200"
                   >
                     <LogOut className="h-4 w-4" />
                     Logout

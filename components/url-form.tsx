@@ -9,6 +9,7 @@ import type { Url, ApiError } from "@/types";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { DatePicker } from "@/components/ui/date-picker";
 import { toast } from "@/components/ui/sonner";
 import { Loader2 } from "lucide-react";
 
@@ -19,7 +20,6 @@ const urlSchema = z.object({
     .regex(/^[a-zA-Z0-9_-]{3,10}$/, "3-10 alphanumeric characters, underscores, or hyphens")
     .optional()
     .or(z.literal("")),
-  expiresAt: z.string().optional().or(z.literal("")),
 });
 
 type UrlFormValues = z.infer<typeof urlSchema>;
@@ -31,6 +31,7 @@ interface UrlFormProps {
 export function UrlForm({ onSuccess }: UrlFormProps) {
   const [isLoading, setIsLoading] = React.useState(false);
   const [showAdvanced, setShowAdvanced] = React.useState(false);
+  const [expiresAt, setExpiresAt] = React.useState<Date | undefined>(undefined);
 
   const {
     register,
@@ -42,7 +43,6 @@ export function UrlForm({ onSuccess }: UrlFormProps) {
     defaultValues: {
       originalUrl: "",
       customCode: "",
-      expiresAt: "",
     },
   });
 
@@ -52,10 +52,11 @@ export function UrlForm({ onSuccess }: UrlFormProps) {
       const url = await urlApi.create({
         originalUrl: data.originalUrl,
         customCode: data.customCode || undefined,
-        expiresAt: data.expiresAt || undefined,
+        expiresAt: expiresAt?.toISOString() || undefined,
       });
       toast.success("URL shortened successfully!");
       reset();
+      setExpiresAt(undefined);
       onSuccess?.(url);
     } catch (error) {
       toast.error(parseError(error as ApiError));
@@ -76,19 +77,26 @@ export function UrlForm({ onSuccess }: UrlFormProps) {
           className="text-base"
         />
         {errors.originalUrl && (
-          <p className="text-sm text-[hsl(var(--destructive))]">
+          <p className="text-sm text-destructive">
             {errors.originalUrl.message}
           </p>
         )}
       </div>
 
-      <button
-        type="button"
-        onClick={() => setShowAdvanced(!showAdvanced)}
-        className="text-sm text-[hsl(var(--muted-foreground))] hover:text-[hsl(var(--foreground))] transition-colors"
-      >
-        {showAdvanced ? "− Hide" : "+ Show"} advanced options
-      </button>
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pt-2">
+        <button
+          type="button"
+          onClick={() => setShowAdvanced(!showAdvanced)}
+          className="text-sm text-muted-foreground hover:text-primary transition-colors duration-200"
+        >
+          {showAdvanced ? "− Hide" : "+ Show"} advanced options
+        </button>
+
+        <Button type="submit" disabled={isLoading} className="w-full sm:w-auto">
+          {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+          Shorten URL
+        </Button>
+      </div>
 
       {showAdvanced && (
         <div className="grid gap-4 sm:grid-cols-2">
@@ -100,26 +108,21 @@ export function UrlForm({ onSuccess }: UrlFormProps) {
               {...register("customCode")}
             />
             {errors.customCode && (
-              <p className="text-sm text-[hsl(var(--destructive))]">
+              <p className="text-sm text-destructive">
                 {errors.customCode.message}
               </p>
             )}
           </div>
           <div className="space-y-2">
-            <Label htmlFor="expiresAt">Expires at (optional)</Label>
-            <Input
-              id="expiresAt"
-              type="datetime-local"
-              {...register("expiresAt")}
+            <Label>Expires at (optional)</Label>
+            <DatePicker
+              date={expiresAt}
+              onDateChange={setExpiresAt}
+              placeholder="Select expiration date"
             />
           </div>
         </div>
       )}
-
-      <Button type="submit" disabled={isLoading} className="w-full sm:w-auto">
-        {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-        Shorten URL
-      </Button>
     </form>
   );
 }
